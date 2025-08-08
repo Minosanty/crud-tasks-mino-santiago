@@ -11,9 +11,13 @@ export const crearUser = async (req, res) => {
         }
     try {
         // validación para que los datos no vengan vacíos
-        if (name === undefined || name === "") return res.status(400).json({ message: "name no puede estar vacio" });
-        if (email === undefined ||email === "") return res.status(400).json({ message: "email no puede estar vacio" });
-        if (password === undefined || password === "") return res.status(400).json({ message: "password no puede estar vacio" });
+        if (name === undefined || name === ""|| name.length>100) return res.status(400).json({ message: "name no puede estar vacio " });
+        if (email === undefined ||email === ""|| email.length>100) return res.status(400).json({ message: "email no puede estar vacio " });
+        if (password === undefined || password === ""|| password.length > 100) return res.status(400).json({ message: "password no puede estar vacio " });
+        if (name.length>100)return res.status(400).json({ message: "name no tiene que superar los 100 caracteres " });
+        if (email.length>100 )return res.status(400).json({ message: "email no tiene que superar los 100 caracteres " });
+        if (password.length>100 )return res.status(400).json({ message: "password no tiene que superar los 100 caracteres " });
+
 
         const emailUnico = await User.findOne({ where: { email } });
         if (emailUnico) return res.status(400).json({ message: "email existente" });
