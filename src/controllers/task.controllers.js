@@ -1,72 +1,66 @@
+import User from "../models/task.model.js";
 
-import user from "../models/user.model.js";
 
-
-export const crearUser = async (req, res) => {
-    const { name, email, password } = req.body;
-    if (req.body) {
+export const crearTask = async (req, res) => {
+    const { title, description, isComplete } = req.body;
+     
         for (let valor in req.body) {
             if (typeof req.body[valor] === "string") {
                 req.body[valor] = req.body[valor].trim();
             }
         }
-    }
     try {
         // validación para que los datos no vengan vacíos
-        if (name === undefined || name === "") return res.status(400).json({ message: "name no puede estar vacio" });
-        if (email === undefined ||email === "") return res.status(400).json({ message: "email year no puede estar vacio" });
-        if (password === undefined || password === "") return res.status(400).json({ message: "password no puede estar vacio" });
+        if (title === undefined || title === "") return res.status(400).json({ message: "title no puede estar vacio" });
+        if (description === undefined ||description === "") return res.status(400).json({ message: "description no puede estar vacio" });
+        if (isComplete === undefined || isComplete === "") return res.status(400).json({ message: "isComplete no puede estar vacio" });
 
-        const nameUnico = await user.findOne({ where: { name } });
-        if (nameUnico !== null) return res.status(400).json({ message: "name existente" });
+        const titleUnico = await User.findOne({ where: { title} });
+        if (titleUnico) return res.status(400).json({ message: "title existente" });
 
-        const emailUnico = await user.findOne({ where: { email } });
-        if (emailUnico !== null) return res.status(400).json({ message: "email existente" });
-
-        const nuevoUser = await user.create({ name, password, password });
-        res.status(201).json({ message: "se ha creado el user correctamente ", user: nuevoUser });
+        const nuevoTask = await User.create({ title, description, isComplete });
+        res.status(201).json({ message: "se ha creado el Task correctamente ", nuevoTask });
     }
     catch (error) {
-        res.status(500).json({ mensaje: "error en la creacion del user" });
+        console.log(error)
+        res.status(500).json({ mensaje: "error en la creacion del task:", error });
     }
 };
 
-export const actulizarUser = async (req, res) => {
-    if (req.body) {
+export const actulizarTask = async (req, res) => {
+    
         for (let valor in req.body) {
             if (typeof req.body[valor] === "string") {
                 req.body[valor] = req.body[valor].trim();
             }
         }
-    }
-    const { name, email, password } = req.body;
+    
+    const { title, description, isComplete  } = req.body;
 
     try {
-        if (name) {
-            const nombreUnico = await user.findOne({ where: { name } });
-            if (nombreUnico !== null) return res.status(400).json({ message: "nombre existente" });
-        }
+          const titleUnico = await User.findOne({ where: { title } });
+        if (titleUnico) return res.status(400).json({ message: "title existente" });
 
-        const [updated] = await user.update({ name, email, password }, {
+        const [updated] = await User.update({ title, description, isComplete }, {
             where: { id: req.params.id }
         });
-        if (updated === 0) return res.status(400).json({ message: "el user no existe" });
+        if (updated === 0) return res.status(400).json({ message: "el task no existe" });
 
-        return res.status(200).json({ message: "se actualizo el user" });
+        return res.status(200).json({ message: "se actualizo el task correctamente " });
 
     }
     catch (error) {
         console.log(error);
-        res.status(500).json({ mensaje: "error en la actualizacion del user" });
+        res.status(500).json({ mensaje: "error en la actualizacion del task" });
     }
 };
 
-export const obtenerTodosLoslenguage = async (req, res) => {
+export const obtenerTodosLosTask = async (req, res) => {
     try {
-        const user = await user.findAll();
-        if (user.length === 0) return res.status(404).json({ message: "no se encontro ningun user" });
+        const task = await task.findAll();
+        if (task.length === 0) return res.status(404).json({ message: "no se encontro ningun task" });
 
-        return res.status(200).json(user);
+        return res.status(200).json(task);
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: error.message });
@@ -76,8 +70,8 @@ export const obtenerTodosLoslenguage = async (req, res) => {
 
 export const obtenerPorId = async (req, res) => {
     try {
-        const user = await user.findByPk(req.params.id);
-        if (user) return res.status(200).json(user);
+        const task = await User.findByPk(req.params.id);
+        if (task) return res.status(200).json(task);
 
         return res.status(404).json({ message: "el user no existe" });
 
@@ -88,12 +82,12 @@ export const obtenerPorId = async (req, res) => {
 
 export const eliminacion = async (req, res) => {
     try {
-        const eliminados = await user.destroy({ where: { id: req.params.id } });
+        const eliminados = await User.destroy({ where: { id: req.params.id } });
         console.log(eliminados);
 
-        if (eliminados === 0) return res.status(404).json({ message: "user no encontrado" });
+        if (eliminados === 0) return res.status(404).json({ message: "task no encontrado" });
 
-        res.status(204).json({ message: "user eliminado" });
+        res.status(204).json({ message: "task eliminado" });
 
     } catch (error) {
         console.log(error);
