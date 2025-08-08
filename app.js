@@ -1,5 +1,5 @@
 import express from "express";
-import taskRouter from "./src/routes/task.routes.js";
+//import taskRouter from "./src/routes/task.routes.js";
 import userRouter from "./src/routes/user.routes.js";
 import {start_DB} from "./src/config/database.js"
 
@@ -7,7 +7,7 @@ import {start_DB} from "./src/config/database.js"
 const PORT = process.env.PORT;
 const app = express();
 app.use(express.json());
-app.use("/api", taskRouter);
+// app.use("/api", taskRouter);
 app.use("/api", userRouter);
 
 app.use((req, res)=>{
