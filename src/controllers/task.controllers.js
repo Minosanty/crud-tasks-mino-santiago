@@ -18,9 +18,9 @@ export const crearTask = async (req, res) => {
         if (title.length>100)return res.status(400).json({ message: "title no tiene que superar los 100 caracteres " });
         if (description.length>100 )return res.status(400).json({ message: "description no tiene que superar los 100 caracteres " });
        
-        const titleUnico = await Task.findOne({ where: { title} });
+        const titleUnico = await Task.findOne({ where: { title,id:{[Op.ne]:req.params.id}} });
         if (titleUnico) return res.status(400).json({ message: "title existente" });
-
+ 
         const nuevoTask = await Task.create({ title, description, isComplete });
         res.status(201).json({ message: "se ha creado el Task correctamente ", nuevoTask });
 

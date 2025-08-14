@@ -25,4 +25,5 @@ const task = sequelize.define(
         }
         }
 )   
+
 export default task

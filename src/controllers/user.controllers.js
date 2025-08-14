@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import User from "../models/user.model.js";
 
 
@@ -19,7 +20,7 @@ export const crearUser = async (req, res) => {
         if (password.length>100 )return res.status(400).json({ message: "password no tiene que superar los 100 caracteres " });
 
 
-        const emailUnico = await User.findOne({ where: { email } });
+        const emailUnico = await User.findOne({ where: { email,id:{[Op.ne]:req.params.id} } });
         if (emailUnico) return res.status(400).json({ message: "email existente" });
 
         const nuevoUser = await User.create({ name, email, password });
